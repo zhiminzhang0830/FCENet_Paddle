@@ -1,8 +1,5 @@
 import numpy as np
-import torch
-
-from torch import nn
-
+from paddle import nn
 import paddle
 import paddle.nn.functional as F
 from functools import partial
@@ -29,7 +26,7 @@ def multi_apply(func, *args, **kwargs):
     return tuple(map(list, zip(*map_results)))
 
 
-class FCELoss(nn.Module):
+class FCELoss(nn.Layer):
     """The class for implementing FCENet loss
     FCENet(CVPR2021): Fourier Contour Embedding for Arbitrary-shaped
         Text Detection
