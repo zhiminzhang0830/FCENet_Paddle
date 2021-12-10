@@ -22,7 +22,9 @@ Yiqin Zhu and Jianyong Chen and Lingyu Liang and Zhanghui Kuang and Lianwen Jin 
 
 * 项目参考MMOCR, 在此非常感谢[mmocr_fcenet](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/fcenet/README.md)，提高了本repo复现论文的效率。
 
+* AI Studio 体验地址（进入后选择v2版本，3221499.ipynb）：
 
+    https://aistudio.baidu.com/aistudio/projectdetail/3221499?contributionType=1
 ## 2. 数据集和复现精度
 
 [CTW1500](https://github.com/Yuliang-Liu/Curve-Text-Detector)
