@@ -22,7 +22,7 @@ import sys
 __dir__ = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(__dir__)
 sys.path.append(os.path.abspath(os.path.join(__dir__, '..')))
-
+sys.path.append('/home/aistudio/external-libraries')
 import yaml
 import paddle
 import paddle.distributed as dist
