@@ -116,8 +116,6 @@ class SimpleDataSet(Dataset):
             data['ext_data'] = self.get_ext_data()
             outs = transform(data, self.ops)
         except Exception as e:
-            import traceback
-            print(traceback.print_exc())
             self.logger.error(
                 "When parsing line {}, error happened with msg: {}".format(
                     data_line, e))
