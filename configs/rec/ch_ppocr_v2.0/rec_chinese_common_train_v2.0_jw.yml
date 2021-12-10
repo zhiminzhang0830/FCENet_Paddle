@@ -1,0 +1,106 @@
+Global:
+  use_gpu: true
+  epoch_num: 120
+  log_smooth_window: 20
+  print_batch_step: 10
+  save_model_dir: ./output/rec_chinese_common_v2.0_jw0.0005
+  save_epoch_step: 3
+  # evaluation is run every 2000 iterations after the 0th iteration
+  eval_batch_step: [0, 155]
+  cal_metric_during_train: True
+  pretrained_model: pretrain_models/ch_ppocr_server_v2.0_rec_pre/best_accuracy.pdparams
+  checkpoints:
+  save_inference_dir:
+  use_visualdl: False
+  infer_img: doc/imgs_words/ch/word_1.jpg
+  # for data or label process
+  character_dict_path: ppocr/utils/ppocr_keys_v1.txt
+  character_type: ch
+  max_text_length: 25
+  infer_mode: False
+  use_space_char: True
+  save_res_path: ./output/rec_chinese_common_v2.0_jw0.0005/predicts_chinese_common_v2.0.txt
+
+
+Optimizer:
+  name: Adam
+  beta1: 0.9
+  beta2: 0.999
+  lr:
+    name: Cosine
+    learning_rate: 0.0005
+  regularizer:
+    name: 'L2'
+    factor: 0.00004
+
+Architecture:
+  model_type: rec
+  algorithm: CRNN
+  Transform:
+  Backbone:
+    name: ResNet
+    layers: 34
+  Neck:
+    name: SequenceEncoder
+    encoder_type: rnn
+    hidden_size: 256
+  Head:
+    name: CTCHead
+    fc_decay: 0.00004
+
+Loss:
+  name: CTCLoss
+
+PostProcess:
+  name: CTCLabelDecode
+
+Metric:
+  name: RecMetric
+  main_indicator: acc
+
+Train:
+  dataset:
+    name: SimpleDataSet
+    data_dir: /data/Dataset/OCR_det/OCR_rec_jinwei/
+    label_file_list: 
+      - "/data/Dataset/OCR_det/OCR_rec_jinwei/0930_labelming/0930_labelming.txt"
+      - "/data/Dataset/OCR_det/OCR_rec_jinwei/jingwei_label_0406_all/jingwei_label_0406_all.txt"
+      - "/data/Dataset/OCR_det/OCR_rec_jinwei/jinwei0929/jinwei0929.txt"
+      - "/data/Dataset/OCR_det/OCR_rec_jinwei/jinweilabel/jinweilabel.txt"
+      - "/data/Dataset/OCR_det/OCR_rec_jinwei/medical/medical.txt"
+    ratio_list: [1.0, 1.0, 1.0, 1.0, 1.0]
+    transforms:
+      - DecodeImage: # load image
+          img_mode: BGR
+          channel_first: False
+      - RecAug: 
+      - CTCLabelEncode: # Class handling label
+      - RecResizeImg:
+          image_shape: [3, 32, 320]
+      - KeepKeys:
+          keep_keys: ['image', 'label', 'length'] # dataloader will return list in this order
+  loader:
+    shuffle: True
+    batch_size_per_card: 256
+    drop_last: True
+    num_workers: 8
+
+Eval:
+  dataset:
+    name: SimpleDataSet
+    data_dir: /data/Dataset/OCR_det/OCR_rec_jinwei/
+    label_file_list: ["/data/Dataset/OCR_det/OCR_rec_jinwei/jingwei_label_0406_all_val/jingwei_label_0406_all_val.txt"]
+    transforms:
+      - DecodeImage: # load image
+          img_mode: BGR
+          channel_first: False
+      - CTCLabelEncode: # Class handling label
+      - RecResizeImg:
+          image_shape: [3, 32, 320]
+      - KeepKeys:
+          keep_keys: ['image', 'label', 'length'] # dataloader will return list in this order
+  loader:
+    shuffle: False
+    drop_last: False
+    batch_size_per_card: 256
+    num_workers: 8
