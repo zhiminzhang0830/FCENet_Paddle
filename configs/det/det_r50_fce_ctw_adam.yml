@@ -4,7 +4,7 @@ Global:
   log_smooth_window: 20
   print_batch_step: 20
   save_model_dir: ./output/fce_r50_ctw_adam/
-  save_epoch_step: 835
+  save_epoch_step: 1500
   # evaluation is run every 5000 iterations after the 4000th iteration
   eval_batch_step: [1, 835]
   cal_metric_during_train: False
@@ -12,7 +12,7 @@ Global:
   checkpoints: #output/fce_r50_ctw/latest
   save_inference_dir: 
   use_visualdl: False
-  infer_img: /data/Dataset/OCR_det/ctw1500/imgs/test
+  infer_img: /home/aistudio/data/ctw1500/imgs/test
   save_res_path: ./output/fce_r50_ctw_adam/predicts_ctw.txt
 
 
@@ -69,9 +69,9 @@ Metric:
 Train:
   dataset:
     name: SimpleDataSet
-    data_dir: /data/Dataset/OCR_det/ctw1500/imgs/
+    data_dir: /home/aistudio/data/ctw1500/imgs/
     label_file_list: 
-      - /data/Dataset/OCR_det/ctw1500/imgs/training.txt
+      - /home/aistudio/data/ctw1500/imgs/training.txt
     transforms:
       - DecodeImage: # load image
           img_mode: RGB
@@ -117,9 +117,9 @@ Train:
 Eval:
   dataset:
     name: SimpleDataSet
-    data_dir: /data/Dataset/OCR_det/ctw1500/imgs/
+    data_dir: /home/aistudio/data/ctw1500/imgs/
     label_file_list:
-      - /data/Dataset/OCR_det/ctw1500/imgs/test.txt
+      - /home/aistudio/data/ctw1500/imgs/test.txt
     transforms:
       - DecodeImage: # load image
           img_mode: RGB #BGR
