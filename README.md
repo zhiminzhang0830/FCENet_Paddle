@@ -42,7 +42,7 @@ Yiqin Zhu and Jianyong Chen and Lingyu Liang and Zhanghui Kuang and Lianwen Jin 
           └─ training.txt
           └─ test.txt 
   ```
-* 标注文件格式参考[PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR/blob/release/2.1/doc/doc_en/detection_en.md)，数据集图像及转换好的标注可以从**百度网盘[下载](https://pan.baidu.com/s/1SP8wmWmEja9i22d5Rm_w7A)**，提取码 b8rn
+* 标注文件格式参考[PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR/blob/release/2.1/doc/doc_en/detection_en.md)，数据集图像及转换好的标注从[此处下载](https://pan.baidu.com/s/1SP8wmWmEja9i22d5Rm_w7A)，提取码 b8rn
 
 * **复现精度**
 
@@ -50,7 +50,7 @@ Yiqin Zhu and Jianyong Chen and Lingyu Liang and Zhanghui Kuang and Lianwen Jin 
   |:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:
   |R50_DCNv2|ctw1500|ImageNet(torch)|6|0.854|[det_r50_fce_ctw.yml](configs/det/det_r50_fce_ctw.yml)|[train_log](output/fce_r50_ctw/train.log)
 
-  **预训练模型使用的是Pytorch版本的ResNet50，转换的预训练模型及训练结果权重可以从百度网盘[下载](https://pan.baidu.com/s/1zq25eZU5mGVc0gqHZ_cSDw)，提取码0wkj**
+  **预训练模型使用的是Pytorch版本的ResNet50，转换的预训练模型及训练结果权重从[此处下载](https://pan.baidu.com/s/1zq25eZU5mGVc0gqHZ_cSDw)，提取码0wkj**
 
 ## 3. 开始使用
 
