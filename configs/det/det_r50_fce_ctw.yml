@@ -12,7 +12,7 @@ Global:
   checkpoints: #output/fce_r50_ctw/latest
   save_inference_dir: 
   use_visualdl: False
-  infer_img: /home/aistudio/data/data120898/ctw1500/imgs/test
+  infer_img: /home/aistudio/data/ctw1500/imgs/test
   save_res_path: ./output/fce_r50_ctw/predicts_ctw.txt
 
 
@@ -70,9 +70,9 @@ Metric:
 Train:
   dataset:
     name: SimpleDataSet
-    data_dir: /home/aistudio/data/data120898/ctw1500/imgs/
+    data_dir: /home/aistudio/data/ctw1500/imgs/
     label_file_list: 
-      - /home/aistudio/data/data120898/ctw1500/imgs/training.txt
+      - /home/aistudio/data/ctw1500/imgs/training.txt
     transforms:
       - DecodeImage: # load image
           img_mode: RGB
@@ -118,9 +118,9 @@ Train:
 Eval:
   dataset:
     name: SimpleDataSet
-    data_dir: /home/aistudio/data/data120898/ctw1500/imgs/
+    data_dir: /home/aistudio/data/ctw1500/imgs/
     label_file_list:
-      - /home/aistudio/data/data120898/ctw1500/imgs/test.txt
+      - /home/aistudio/data/ctw1500/imgs/test.txt
     transforms:
       - DecodeImage: # load image
           img_mode: RGB #BGR
