@@ -20,7 +20,7 @@ Yiqin Zhu and Jianyong Chen and Lingyu Liang and Zhanghui Kuang and Lianwen Jin 
 
 * 论文提出了针对场景文本中的任意形状的文本框利用傅里叶变换进行建模的方法，骨干网络采用了ResNet+FPN的架构。针对Head部分，FCENet具有两个分支，其中分类分支预测文本区域和文本中心区域的概率图，相乘得到属于文本中心分类的得分图；回归分支则负责预测傅里叶特征向量。算法对文本中心置信度大于阈值的像素点所对应的傅里叶特征向量进行反变换，经过NMS得到最终的检测结果。
 
-* 本项目基于[PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR)复现，利用其中提供的丰富的OCR相关工具大大减小了项目复现的难度。复现过程中代码参考了[mmocr_fcenet](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/fcenet/README.md)中的实现，提高了本repo复现论文的效率。在此表示感谢。
+* 本项目基于[PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR)复现，利用其中丰富的OCR相关工具大大减小了项目复现的难度。复现过程中代码参考了[mmocr_fcenet](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/fcenet/README.md)中的实现，提高了本repo复现论文的效率。在此表示感谢。
 
 * AI Studio 体验地址（进入后选择v2版本，3221499.ipynb）：
 
