@@ -22,7 +22,7 @@ Yiqin Zhu and Jianyong Chen and Lingyu Liang and Zhanghui Kuang and Lianwen Jin 
 
 * 本项目基于[PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR)复现，利用其中丰富的OCR相关工具大大减小了项目复现的难度。复现过程中代码参考了[mmocr_fcenet](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/fcenet/README.md)中的实现，提高了本repo复现论文的效率。在此表示感谢。
 
-* AI Studio 体验地址（进入后选择v2版本，3221499.ipynb）：
+* AI Studio 体验地址：
 
     https://aistudio.baidu.com/aistudio/projectdetail/3221499?contributionType=1
 ## 2. 数据集和复现精度
