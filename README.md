@@ -84,6 +84,10 @@ Yiqin Zhu and Jianyong Chen and Lingyu Liang and Zhanghui Kuang and Lianwen Jin 
 
         python tools/infer_det.py -c configs/det/det_r50_fce_ctw.yml -o Global.pretrained_model='your model path'
 
+### 3.3 TIPC
+
+  * 请参考[TIPC](test_tipc/readme.md)
+
 ## 4. 代码结构
 
 
@@ -91,6 +95,7 @@ Yiqin Zhu and Jianyong Chen and Lingyu Liang and Zhanghui Kuang and Lianwen Jin 
     ├─doc                        
     ├─output                           
     ├─ppocr      
+    ├─test_tipc
     ├─tools                                            
     │  infer/                     
     │  eval.py                        
