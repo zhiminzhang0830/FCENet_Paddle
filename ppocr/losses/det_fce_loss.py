@@ -47,7 +47,9 @@ class FCELoss(nn.Layer):
         self.ohem_ratio = ohem_ratio
 
     def forward(self, preds, labels):
-        assert isinstance(preds, list)
+        assert isinstance(preds, dict)
+        preds = preds['levels']
+
         p3_maps, p4_maps, p5_maps = labels[1:]
         assert p3_maps[0].shape[0] == 4 * self.fourier_degree + 5,\
             'fourier degree not equal in FCEhead and FCEtarget'
