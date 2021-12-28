@@ -9,6 +9,7 @@ import paddle.nn.functional as F
 from paddle.nn.initializer import Normal
 import paddle
 
+
 # from mmcv.runner import BaseModule
 # from mmdet.models.builder import HEADS, build_loss
 # from .head_mixin import HeadMixin
@@ -556,11 +557,22 @@ class FCEHead(HeadMixin, BaseModule):
             weight_attr=ParamAttr(name='reg_weights', initializer=Normal(
                      mean=paddle.to_tensor(0.), std=paddle.to_tensor(0.01))),
             bias_attr=True)
+
     def forward(self, feats, targets=None):
         cls_res, reg_res = multi_apply(self.forward_single, feats)
         level_num = len(cls_res)
-        preds = [[cls_res[i], reg_res[i]] for i in range(level_num)]
-        return preds
+        # import pdb;pdb.set_trace()
+        outs = {}
+        
+        if not self.training:
+            for i in range(level_num):
+                tr_pred = F.softmax(cls_res[i][:, 0:2, :, :], axis=1)
+                tcl_pred = F.softmax(cls_res[i][:, 2:, :, :], axis=1)
+                outs['level_{}'.format(i)] = paddle.concat([tr_pred, tcl_pred, reg_res[i]], axis=1)
+        else:
+            preds = [[cls_res[i], reg_res[i]] for i in range(level_num)]
+            outs['levels'] = preds
+        return outs
 
     def forward_single(self, x):
         cls_predict = self.out_conv_cls(x)
