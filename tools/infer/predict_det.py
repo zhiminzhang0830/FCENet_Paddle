@@ -38,25 +38,47 @@ class TextDetector(object):
     def __init__(self, args):
         self.args = args
         self.det_algorithm = args.det_algorithm
-        pre_process_list = [{
-            'DetResizeForTest': {
-                'limit_side_len': args.det_limit_side_len,
-                'limit_type': args.det_limit_type,
-            }
-        }, {
-            'NormalizeImage': {
-                'std': [0.229, 0.224, 0.225],
-                'mean': [0.485, 0.456, 0.406],
-                'scale': '1./255.',
-                'order': 'hwc'
-            }
-        }, {
-            'ToCHWImage': None
-        }, {
-            'KeepKeys': {
-                'keep_keys': ['image', 'shape']
-            }
-        }]
+        if self.det_algorithm == 'FCE':
+            pre_process_list = [{
+                'DetResizeForTest': {
+                    'rescale_img': [1080, 736],
+                }
+            }, {
+                'NormalizeImage': {
+                    'std': [0.229, 0.224, 0.225],
+                    'mean': [0.485, 0.456, 0.406],
+                    'scale': '1./255.',
+                    'order': 'hwc'
+                }
+            }, {
+                'Pad': None
+            }, {
+                'ToCHWImage': None
+            }, {
+                'KeepKeys': {
+                    'keep_keys': ['image', 'shape']
+                }
+            }]
+        else:
+            pre_process_list = [{
+                'DetResizeForTest': {
+                    'limit_side_len': args.det_limit_side_len,
+                    'limit_type': args.det_limit_type,
+                }
+            }, {
+                'NormalizeImage': {
+                    'std': [0.229, 0.224, 0.225],
+                    'mean': [0.485, 0.456, 0.406],
+                    'scale': '1./255.',
+                    'order': 'hwc'
+                }
+            }, {
+                'ToCHWImage': None
+            }, {
+                'KeepKeys': {
+                    'keep_keys': ['image', 'shape']
+                }
+            }]
         postprocess_params = {}
         if self.det_algorithm == "DB":
             postprocess_params['name'] = 'DBPostProcess'
@@ -97,6 +119,13 @@ class TextDetector(object):
                 postprocess_params["sample_pts_num"] = 2
                 postprocess_params["expand_scale"] = 1.0
                 postprocess_params["shrink_ratio_of_width"] = 0.3
+        elif self.det_algorithm == "FCE":
+            postprocess_params['name'] = 'FCEPostProcess'
+            postprocess_params["scales"] = [8, 16, 32]
+            postprocess_params["alpha"] = 1.0
+            postprocess_params["beta"] = 1.0
+            postprocess_params["fourier_degree"] = 5
+
         else:
             logger.info("unknown det_algorithm:{}".format(self.det_algorithm))
             sys.exit(0)
@@ -157,6 +186,7 @@ class TextDetector(object):
         return points
 
     def filter_tag_det_res(self, dt_boxes, image_shape):
+        # import pdb;pdb.set_trace()
         img_height, img_width = image_shape[0:2]
         dt_boxes_new = []
         for box in dt_boxes:
@@ -179,7 +209,7 @@ class TextDetector(object):
         dt_boxes = np.array(dt_boxes_new)
         return dt_boxes
 
-    def __call__(self, img):
+    def __call__(self, img, file=None, reprod_logs=None):
         ori_im = img.copy()
         data = {'image': img}
 
@@ -207,7 +237,6 @@ class TextDetector(object):
             outputs.append(output)
         if self.args.benchmark:
             self.autolog.times.stamp()
-        # import pdb; pdb.set_trace()
 
         preds = {}
         if self.det_algorithm == "EAST":
@@ -222,6 +251,10 @@ class TextDetector(object):
             preds['maps'] = outputs[0]
         elif self.det_algorithm == 'DBMulti':
             preds['maps'] = outputs[0]
+        elif self.det_algorithm == 'FCE':
+            preds['level_0'] = outputs[0]
+            preds['level_1'] = outputs[1]
+            preds['level_2'] = outputs[2]
         else:
             raise NotImplementedError
 
@@ -229,6 +262,8 @@ class TextDetector(object):
         post_result = self.postprocess_op(preds, shape_list)
         dt_boxes = post_result[0]['points']
         if self.det_algorithm == "SAST" and self.det_sast_polygon:
+            dt_boxes = self.filter_tag_det_res_only_clip(dt_boxes, ori_im.shape)
+        elif self.det_algorithm == "FCE":
             dt_boxes = self.filter_tag_det_res_only_clip(dt_boxes, ori_im.shape)
         else:
             dt_boxes = self.filter_tag_det_res(dt_boxes, ori_im.shape)
@@ -240,6 +275,8 @@ class TextDetector(object):
 
 
 if __name__ == "__main__":
+
+
     args = utility.parse_args()
     image_file_list = get_image_file_list(args.image_dir)
     text_detector = TextDetector(args)
@@ -259,6 +296,8 @@ if __name__ == "__main__":
         img, flag = check_and_read_gif(image_file)
         if not flag:
             img = cv2.imread(image_file)
+            if args.det_algorithm == 'FCE':
+                img = img[:, :, ::-1]
         if img is None:
             logger.info("error in loading image:{}".format(image_file))
             continue
@@ -279,7 +318,6 @@ if __name__ == "__main__":
                                 "det_res_{}".format(img_name_pure))
         cv2.imwrite(img_path, src_im)
         logger.info("The visualized image saved in {}".format(img_path))
-
     with open(os.path.join(draw_img_save, "det_results.txt"), 'w') as f:
         f.writelines(save_results)
         f.close()
