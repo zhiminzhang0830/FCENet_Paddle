@@ -1,0 +1,51 @@
+===========================train_params===========================
+model_name:det_r50_dcn_fce_v2.0
+python:python
+gpu_list:0
+Global.use_gpu:True
+Global.auto_cast:null
+Global.epoch_num:lite_train_lite_infer=1|whole_train_whole_infer=1500
+Global.save_model_dir:./output_tipc/fce_r50_ctw/
+Train.loader.batch_size_per_card:lite_train_lite_infer=6|whole_train_lite_infer=6
+Global.pretrained_model:output/fce_r50_ctw/best_accuracy.pdparams
+train_model_name:latest
+train_infer_img_dir:./ctw1500_tiny/imgs/test/
+null:null
+##
+trainer:norm_train
+norm_train:tools/train.py -c configs/det/det_r50_fce_ctw_lite.yml -o 
+quant_export:null
+fpgm_export:null
+distill_train:null
+null:null
+null:null
+##
+===========================eval_params=========================== 
+eval:tools/eval.py -c configs/det/det_r50_fce_ctw_lite.yml -o
+null:null
+##
+===========================infer_params===========================
+Global.save_inference_dir:./output_tipc/fce_r50_ctw/
+Global.pretrained_model:
+norm_export:tools/export_model.py -c configs/det/det_r50_fce_ctw_lite.yml -o 
+quant_export:null 
+fpgm_export:null
+distill_export:null
+export1:null
+export2:null
+##
+train_model:./output_tipc/fce_r50_ctw/best_accuracy
+infer_export:tools/export_model.py -c configs/det/det_r50_fce_ctw_lite.yml -o
+infer_quant:False
+inference:tools/infer/predict_det.py
+--use_gpu:True|False
+--enable_mkldnn:True|False
+--cpu_threads:1|6
+--rec_batch_num:1
+--use_tensorrt:False
+--precision:fp32
+--det_model_dir:
+--image_dir:./ctw1500_tiny/imgs/test
+--save_log_path:null
+--benchmark:True
+--det_algorithm:FCE
