@@ -21,7 +21,7 @@ import cv2
 import paddle
 # from shapely.geometry import Polygon
 import pyclipper
-import paddle.nn.functional as F
+
 from numpy.fft import ifft
 import Polygon as plg
 
@@ -226,10 +226,13 @@ def fcenet_decode(preds,
 
     # import pdb;pdb.set_trace()
     cls_pred = preds[0][0]
-    tr_pred = F.softmax(cls_pred[0:2], axis=0).cpu().numpy()
-    tcl_pred = F.softmax(cls_pred[2:], axis=0).cpu().numpy()
+    # tr_pred = F.softmax(cls_pred[0:2], axis=0).cpu().numpy()
+    # tcl_pred = F.softmax(cls_pred[2:], axis=0).cpu().numpy()
 
-    reg_pred = preds[1][0].transpose([1, 2, 0]).cpu().numpy()
+    tr_pred = cls_pred[0:2]
+    tcl_pred = cls_pred[2:]
+
+    reg_pred = preds[1][0].transpose([1, 2, 0]) #.cpu().numpy()
     x_pred = reg_pred[:, :, :2 * fourier_degree + 1]
     y_pred = reg_pred[:, :, 2 * fourier_degree + 1:]
 
@@ -301,7 +304,19 @@ class FCEPostProcess(object):
         self.beta = beta
         self.text_repr_type = text_repr_type
 
-    def __call__(self, score_maps, shape_list):
+    # def __call__(self, preds, shape_list):
+    #     score_maps = preds['maps']
+    #     return self.get_boundary(score_maps, shape_list)
+
+    def __call__(self, preds, shape_list):
+        score_maps = []
+        for key, value in preds.items():
+            if isinstance(value, paddle.Tensor):
+                value = value.numpy()
+            cls_res = value[:, :4, :, :]
+            reg_res = value[:, 4:, :, :]
+            score_maps.append([cls_res, reg_res])
+            
         return self.get_boundary(score_maps, shape_list)
 
     def resize_boundary(self, boundaries, scale_factor):
